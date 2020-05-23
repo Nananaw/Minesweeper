@@ -75,18 +75,33 @@ function generateTable(table, board)
     {
       let cell = row.insertCell();
       let button = document.createElement("button");
-      button.onclick = function()
+      if(board[i][j] == 9)
       {
-        if(board[i][j] == 9)
+        button.onclick = function()
         {
           alert('You lost.');
+        };
+      }
+      else
+      {
+        if(board[i][j] > 0)
+        {
+          button.onclick = function(event)
+          {
+            event.preventDefault();
+            let text = document.createTextNode(board[i][j].toString());
+            document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+            document.getElementById('board').rows[i].cells[j].appendChild(text);
+          };
         }
         else
         {
-          let text = document.createElement("text");
-          cell. appendChild(text);
+          button.onclick = function(event)
+          {
+            event.preventDefault();
+          }
         }
-      };
+      }
       cell.appendChild(button);
     }
   }
