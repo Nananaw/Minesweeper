@@ -75,6 +75,18 @@ function generateTable(table, board)
     {
       let cell = row.insertCell();
       let button = document.createElement("button");
+      button.onclick = function()
+      {
+        if(board[i][j] == 9)
+        {
+          alert('You lost.');
+        }
+        else
+        {
+          let text = document.createElement("text");
+          cell. appendChild(text);
+        }
+      };
       cell.appendChild(button);
     }
   }
