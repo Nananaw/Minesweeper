@@ -80,6 +80,8 @@ function generateTable(table, board)
         button.onclick = function()
         {
           alert('You lost.');
+          location.reload();
+          return false;
         };
       }
       else
@@ -99,7 +101,20 @@ function generateTable(table, board)
           button.onclick = function(event)
           {
             event.preventDefault();
-          }
+            let text = document.createTextNode(" ");
+            document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+            document.getElementById('board').rows[i].cells[j].appendChild(text);
+            for(let b=i-1; b<i+2; b++)
+            {
+              for(let c=j-1; c<j+2; c++)
+              {
+                if((b>=0 && c>=0) && (b<=size-1 && c<=size-1))
+                {
+                  document.getElementById('board').rows[b].cells[c].yourButton.click();
+                }
+              }
+            }
+          };
         }
       }
       cell.appendChild(button);
