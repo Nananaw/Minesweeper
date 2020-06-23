@@ -108,9 +108,9 @@ function generateTable(table, board)
             {
               for(let c=j-1; c<j+2; c++)
               {
-                if((b>=0 && c>=0) && (b<=size-1 && c<=size-1))
+                if((b>=0 && c>=0) && (b<=size-1 && c<=size-1) && (document.getElementById('board').rows[b].cells[j].firstChild.type == "submit"))
                 {
-                  document.getElementById('board').rows[b].cells[c].yourButton.click();
+                  document.getElementById('board').rows[b].cells[c].firstChild.click();
                 }
               }
             }
@@ -125,5 +125,7 @@ function generateTable(table, board)
 x = createBoard();
 x = numberBoard(x);
 console.log(x);
+let a = document.createElement("button");
+console.log(a.type);
 let table = document.getElementById("board");
 generateTable(table, x);
