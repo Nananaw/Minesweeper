@@ -12,5 +12,7 @@ button
   width: 20px;
   height: 20px;
 }
-
-
+#restart
+{
+  width: fit-content;
+}

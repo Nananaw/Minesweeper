@@ -1,7 +1,36 @@
 const size = 10;
 const bombs = 15;
 
-function createBoard()
+//creates initial table where first move isn't lethal
+function createGame(table)
+{
+  for(let i=0; i<size; i++)
+  {
+    let row = table.insertRow();
+    for(let j=0; j<size; j++)
+    {
+      let cell = row.insertCell();
+      let button = document.createElement("button");
+      button.onclick = function()
+      {
+        startGame(table, i, j);
+      };
+      cell.appendChild(button);
+    }
+  }
+}
+
+//starts the game
+function startGame(table, row, col)
+{
+  let x = createBoard(row, col);
+  x = numberBoard(x);
+  generateTable(table, x, row, col);
+  console.log(x);
+}
+
+//creates board based on first move
+function createBoard(row, col)
 {
   board = new Array(size);
   for(let i=0; i<size; i++)
@@ -14,18 +43,19 @@ function createBoard()
   }
   for(let i=0; i<bombs; i++)
   {
-    let row = Math.floor(Math.random() * size);
-    let col = Math.floor(Math.random() * size);
-    while(board[row][col] == 9)
+    let r = Math.floor(Math.random() * size);
+    let c = Math.floor(Math.random() * size);
+    while(board[r][c] == 9 || (r == row && c == col))
     {
-      row = Math.floor(Math.random() * size);
-      col = Math.floor(Math.random() * size);
+      r = Math.floor(Math.random() * size);
+      c = Math.floor(Math.random() * size);
     }
-    board[row][col] = 9;
+    board[r][c] = 9;
   }
   return board;
 }
 
+//adds numbers(of mines adjacent) to the board
 function numberBoard(board)
 {
   for(let i=0; i<size; i++)
@@ -38,6 +68,8 @@ function numberBoard(board)
   return board;
 }
 
+//gives number for specified square on board
+//9 is for a mine
 function number(board, i, j)
 {
   if(board[i][j] == 9)
@@ -50,6 +82,7 @@ function number(board, i, j)
   }
 }
 
+//checks adjacent mines
 function checkBox(board, i, j)
 {
   let a = 0;
@@ -66,66 +99,119 @@ function checkBox(board, i, j)
   return a;
 }
 
-function generateTable(table, board)
+//removes everything from table
+function resetBoard(table)
 {
+  for(let i=0; i<size; i++)
+  {
+    table.deleteRow(0);
+  }
+}
+
+//sets up table based on first move and does first move
+function generateTable(table, board, row, col)
+{
+  resetBoard(table);
   for (let i=0; i<size; i++)
   {
     let row = table.insertRow();
     for (let j=0; j<size; j++)
     {
       let cell = row.insertCell();
-      let button = document.createElement("button");
-      if(board[i][j] == 9)
+      if((i == row) && (j == col))
       {
-        button.onclick = function()
-        {
-          alert('You lost.');
-          location.reload();
-          return false;
-        };
+        let text = document.createElement("TD");
+        text.innerHTML = board[i][j].toString();
+        cell.appendChild(text);
       }
       else
       {
-        if(board[i][j] > 0)
+        let button = document.createElement("button");
+        if(board[i][j] == 9)
         {
-          button.onclick = function(event)
+          button.addEventListener("click", lose);
+          button.addEventListener("contextment", function(ev)
           {
-            event.preventDefault();
-            let text = document.createTextNode(board[i][j].toString());
-            document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
-            document.getElementById('board').rows[i].cells[j].appendChild(text);
-          };
+            ev.preventDefault();
+            flag(table, i, j);
+            return false;
+          }, false);
         }
-        else
+        else if (board[i][j] == 0)
         {
-          button.onclick = function(event)
+          button.onclick = function()
           {
             event.preventDefault();
-            let text = document.createTextNode(" ");
+            let text = document.createElement("TD");
+            text.innerHTML = board[i][j].toString();
             document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
             document.getElementById('board').rows[i].cells[j].appendChild(text);
-            for(let b=i-1; b<i+2; b++)
+            for(let u=i-1; u<i+2; u++)
             {
-              for(let c=j-1; c<j+2; c++)
+              for(let v=j-1; v<j+2; v++)
               {
-                if((b>=0 && c>=0) && (b<=size-1 && c<=size-1) && (document.getElementById('board').rows[b].cells[j].firstChild.type == "submit"))
+                if((u>=0) && (u<size) && (v>=0) && (v<size))
                 {
-                  document.getElementById('board').rows[b].cells[c].firstChild.click();
+                  let a = document.getElementById('board').rows[u].cells[v].lastElementChild;
+                  if(a.tagName == 'BUTTON')
+                  {
+                    a.click();
+                  }
                 }
               }
             }
           };
         }
+        else
+        {
+          button.onclick = function()
+          {
+            event.preventDefault();
+            let text = document.createElement("TD");
+            text.innerHTML = board[i][j].toString();
+            document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+            document.getElementById('board').rows[i].cells[j].appendChild(text);
+          };
+        }
+        cell.appendChild(button);
       }
-      cell.appendChild(button);
     }
   }
+  document.getElementById('board').rows[row].cells[col].lastElementChild.click();
 }
 
-x = createBoard();
-x = numberBoard(x);
-console.log(x);
-let a = document.createElement("button");
-console.log(a.type);
+function lose()
+{
+  alert('You lost.');
+  location.reload();
+  return false;
+}
+
+function nothing()
+{
+  event.preventDefault();
+  return false;
+}
+
+function flag(table, row, col)
+{
+  event.preventDefault();
+  document.getElementById('board').rows[row].cells[col].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+  let button = document.createElement("button");
+  button.addEventListener("click", nothing);
+  button.addEventListener("contextment", () => unflag(table, i, j));
+  document.getElementById('board').rows[i].cells[j].appendChild(button);
+}
+
+function unflag(table, row, col)
+{
+  event.preventDefault();
+  document.getElementById('board').rows[row].cells[col].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+  let button = document.createElement("button");
+  button.addEventListener("click", nothing);
+  button.addEventListener("contextment", () => unflag(table, i, j));
+  document.getElementById('board').rows[i].cells[j].appendChild(button);
+}
+
 let table = document.getElementById("board");
-generateTable(table, x);
+createGame(table);
