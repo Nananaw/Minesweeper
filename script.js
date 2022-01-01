@@ -228,7 +228,13 @@ function unflag(board, row, col)
   console.log("unflagged");
 }
 
+function restart()
+{
+  resetBoard(document.getElementById('board'));
+  createGame(document.getElementById('board'));
+}
+
 let table = document.getElementById("board");
 var reset = document.getElementById("restart");
-reset.addEventListener("click", () => location.reload());
+reset.addEventListener("click", restart);
 createGame(table);
