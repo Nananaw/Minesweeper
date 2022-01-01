@@ -144,13 +144,34 @@ function nothing()
   return false;
 }
 
+function lose(board)
+{
+  alert('You lost.');
+  for(let i=0; i<size; i++)
+  {
+    for(let j=0; j<size; j++)
+    {
+      let text = document.createElement("TD");
+      if(board[i][j] == 9)
+      {
+        text.innerHTML = "M";
+        text.classList.add("mines");
+      }
+      else
+      {
+        text.innerHTML = board[i][j].toString();
+      }
+      document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+      document.getElementById('board').rows[i].cells[j].appendChild(text);
+    }
+  }
+}
+
 function clickNormal(board, i, j)
 {
   if(board[i][j] == 9)
   {
-    alert('You lost.');
-    location.reload();
-    return false;
+    lose(board);
   }
   else if (board[i][j] == 0)
   {
@@ -208,4 +229,6 @@ function unflag(board, row, col)
 }
 
 let table = document.getElementById("board");
+var reset = document.getElementById("restart");
+reset.addEventListener("click", () => location.reload());
 createGame(table);
