@@ -16,3 +16,7 @@ button
 {
   width: fit-content;
 }
+.flagged
+{
+  background-color: red;
+}

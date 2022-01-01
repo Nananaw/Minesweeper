@@ -118,73 +118,24 @@ function generateTable(table, board, row, col)
     for (let j=0; j<size; j++)
     {
       let cell = row.insertCell();
-      if((i == row) && (j == col))
+      /*if((i == row) && (j == col))
       {
         let text = document.createElement("TD");
         text.innerHTML = board[i][j].toString();
         cell.appendChild(text);
-      }
-      else
+      }*/
+      let button = document.createElement("button");
+      button.addEventListener("contextmenu", function(ev)
       {
-        let button = document.createElement("button");
-        if(board[i][j] == 9)
-        {
-          button.addEventListener("click", lose);
-          button.addEventListener("contextment", function(ev)
-          {
-            ev.preventDefault();
-            flag(table, i, j);
-            return false;
-          }, false);
-        }
-        else if (board[i][j] == 0)
-        {
-          button.onclick = function()
-          {
-            event.preventDefault();
-            let text = document.createElement("TD");
-            text.innerHTML = board[i][j].toString();
-            document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
-            document.getElementById('board').rows[i].cells[j].appendChild(text);
-            for(let u=i-1; u<i+2; u++)
-            {
-              for(let v=j-1; v<j+2; v++)
-              {
-                if((u>=0) && (u<size) && (v>=0) && (v<size))
-                {
-                  let a = document.getElementById('board').rows[u].cells[v].lastElementChild;
-                  if(a.tagName == 'BUTTON')
-                  {
-                    a.click();
-                  }
-                }
-              }
-            }
-          };
-        }
-        else
-        {
-          button.onclick = function()
-          {
-            event.preventDefault();
-            let text = document.createElement("TD");
-            text.innerHTML = board[i][j].toString();
-            document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
-            document.getElementById('board').rows[i].cells[j].appendChild(text);
-          };
-        }
-        cell.appendChild(button);
-      }
+        ev.preventDefault();
+        flag(board, i, j);
+        return false;
+      }, false);
+      button.addEventListener("click", () => clickNormal(board, i, j));
+      cell.appendChild(button);
     }
   }
   document.getElementById('board').rows[row].cells[col].lastElementChild.click();
-}
-
-function lose()
-{
-  alert('You lost.');
-  location.reload();
-  return false;
 }
 
 function nothing()
@@ -193,24 +144,67 @@ function nothing()
   return false;
 }
 
-function flag(table, row, col)
+function clickNormal(board, i, j)
 {
-  event.preventDefault();
-  document.getElementById('board').rows[row].cells[col].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
-  let button = document.createElement("button");
-  button.addEventListener("click", nothing);
-  button.addEventListener("contextment", () => unflag(table, i, j));
-  document.getElementById('board').rows[i].cells[j].appendChild(button);
+  if(board[i][j] == 9)
+  {
+    alert('You lost.');
+    location.reload();
+    return false;
+  }
+  else if (board[i][j] == 0)
+  {
+    event.preventDefault();
+    let text = document.createElement("TD");
+    text.innerHTML = board[i][j].toString();
+    document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+    document.getElementById('board').rows[i].cells[j].appendChild(text);
+    for(let u=i-1; u<i+2; u++)
+    {
+      for(let v=j-1; v<j+2; v++)
+      {
+        if((u>=0) && (u<size) && (v>=0) && (v<size))
+        {
+          let a = document.getElementById('board').rows[u].cells[v].lastElementChild;
+          if(a.tagName == 'BUTTON')
+          {
+            a.click();
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    event.preventDefault();
+    let text = document.createElement("TD");
+    text.innerHTML = board[i][j].toString();
+    document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+    document.getElementById('board').rows[i].cells[j].appendChild(text);
+  }
 }
 
-function unflag(table, row, col)
+function flag(board, row, col)
 {
   event.preventDefault();
-  document.getElementById('board').rows[row].cells[col].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+  document.getElementById('board').rows[row].cells[col].removeChild(document.getElementById('board').rows[row].cells[col].lastElementChild);
   let button = document.createElement("button");
+  button.classList.add("flagged");
   button.addEventListener("click", nothing);
-  button.addEventListener("contextment", () => unflag(table, i, j));
-  document.getElementById('board').rows[i].cells[j].appendChild(button);
+  button.addEventListener("contextmenu", () => unflag(board, row, col));
+  document.getElementById('board').rows[row].cells[col].appendChild(button);
+  console.log("flagged");
+}
+
+function unflag(board, row, col)
+{
+  event.preventDefault();
+  document.getElementById('board').rows[row].cells[col].removeChild(document.getElementById('board').rows[row].cells[col].lastElementChild);
+  let button = document.createElement("button");
+  button.addEventListener("click", () => clickNormal(board, row, col));
+  button.addEventListener("contextmenu", () => flag(board, row, col));
+  document.getElementById('board').rows[row].cells[col].appendChild(button);
+  console.log("unflagged");
 }
 
 let table = document.getElementById("board");
