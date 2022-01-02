@@ -169,8 +169,26 @@ function lose(board)
 
 function win(board)
 {
+  for(let i=0; i<size; i++)
+  {
+    for(let j=0; j<size; j++)
+    {
+      if(board[i][j] == 9)
+      {
+        let button = document.createElement("button");
+        button.addEventListener("click", nothing);
+        button.addEventListener("contextmenu", nothing);
+        document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
+        document.getElementById('board').rows[i].cells[j].appendChild(button);
+      }
+      else
+      {
+        document.getElementById('board').rows[i].cells[j].classList.add("won");
+      }
+    }
+  }
   alert('You won.');
-  return false;
+  //return false;
 }
 
 function won(board)
