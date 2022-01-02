@@ -167,6 +167,39 @@ function lose(board)
   }
 }
 
+function win(board)
+{
+  alert('You won.');
+  return false;
+}
+
+function won(board)
+{
+  for(let i=0; i<size; i++)
+  {
+    for(let j=0; j<size; j++)
+    {
+      if(board[i][j] == 9)
+      {
+        let x = document.getElementById('board').rows[i].cells[j].lastElementChild;
+        if(x.nodeName != "BUTTON")
+        {
+          return false;
+        }
+      }
+      else
+      {
+        let x = document.getElementById('board').rows[i].cells[j].lastElementChild;
+        if(x.nodeName != "TD")
+        {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
 function clickNormal(board, i, j)
 {
   if(board[i][j] == 9)
@@ -202,6 +235,10 @@ function clickNormal(board, i, j)
     text.innerHTML = board[i][j].toString();
     document.getElementById('board').rows[i].cells[j].removeChild(document.getElementById('board').rows[i].cells[j].lastElementChild);
     document.getElementById('board').rows[i].cells[j].appendChild(text);
+  }
+  if(won(board))
+  {
+    win(board);
   }
 }
 
