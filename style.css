@@ -1,6 +1,6 @@
 body
 {
-  /*background-color: blue;*/
+  /*background-color: #00ff00;*/
 }
 table, th, td
 {
@@ -31,5 +31,5 @@ button
 }
 .won
 {
-  background-color: green;
+  background-color: #00ff00;
 }
